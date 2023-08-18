@@ -1,0 +1,100 @@
+Project Quotation {
+    database_type: 'MySql'
+}
+
+Table users {
+    id int [pk, increment]
+    email varchar [not null, unique]
+    password text [not null]
+    role tinyint
+    created_at timestamp
+    update_at timestamp
+}
+
+Table materials {
+    id int [pk, increment]
+    name varchar [not null]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table material_specs {
+    id int [pk, increment]
+    material_id int [not null, ref: > materials.id]
+    spesification varchar [not null]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table material_rate {
+    id int [pk, increment]
+    material_id [not null, ref: > materials.id]
+    material_spec_id int [not null, ref: > material_specs.id]
+    period date [not null]
+    rate double [not null, default: 0]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table process {
+    id int [pk, increment]
+    name varchar [not null]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table process_code {
+    id int [pk, increment]
+    process_id int [not null, ref: > process.id]
+    name varchar [not null]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table process_rate {
+    id int [pk, increment]
+    process_id [not null, ref: > process.id]
+    process_code_id int [not null, ref: > process_code.id]
+    rate double [not null, default: 0]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table currency_group {
+    id [int, increment]
+    name varchar [not null]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table currency_value {
+    id int [pk, increment]
+    currency_type_id tinyint [not null, note: '1 for slide and 2 for non-slide']
+    currency_group_id int [not null, ref: > currency_group.id]
+    period date [not null]
+    value double [not null]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table cost {
+    id int [pk, increment]
+    name varchar [not null]
+    number varchar [not null]
+    total_cost double [not null, default: 0]
+    created_at timestamp
+    update_at timestamp
+}
+
+Table cost_detail {
+    id int [pk, increment]
+    cost_id int [not null, ref > cost.id]
+    material_cost double [not null]
+    material_meta_id int [not null, ref > material_rate.id]
+    process_cost double [not null]
+    process_meta_id int [not null, ref > process_rate.id]
+    purchase_cost double [not null]
+    purchase_meta_id int [not null, ref > currency_value.id]
+    created_at timestamp
+    update_at timestamp
+}
